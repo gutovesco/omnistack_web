@@ -1,25 +1,23 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+
+//Componente = funcao q retorna um conteudo (HTML, CSS, JS), primeira letra sempre maiuscula, um por arquivo
+//Propriedade = informaçoes pássadas por hierarquia, por exemplo: src, title, class
+//Estado = informaooes mantidas pelo componente(imutabilidade(nao alterar dados, criar um novo e substituir))
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+
+  return(
+    <div id="app">
+      <aside>
+
+
+      </aside>
+      <main>
+        
+      </main>
+
     </div>
+
   );
 }
 
