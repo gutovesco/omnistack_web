@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import api from './services/api';
+
 import './global.css';
 import './App.css';
 import './sidebar.css';
@@ -9,6 +11,7 @@ import './main.css';
 //Estado = informaooes mantidas pelo componente(imutabilidade(nao alterar dados, criar um novo e substituir))
 
 function App() {
+  const [devs, setDevs] = useState([]);
   const [github_username, setGithubUsername] = useState('');
   const [techs, setTechs] = useState('');
   const [latitude, setLatitude] = useState('');
@@ -30,9 +33,25 @@ function App() {
     )
   }, []);
 
+  useEffect(() => {
+    async function loadDevs(){
+      const response = await api.get('/devs')
+      setDevs(response.data);
+    }
+    loadDevs();
+  }, [])
   async function handleAddDev(e){
     e.preventDefault();
     
+    const response = await api.post('/devs', {
+      github_username,
+      techs,
+      latitude,
+      longitude,
+    })
+    setGithubUsername('');
+    setTechs('');
+    setDevs([...devs, response.data])
   }
 
   return(
@@ -93,44 +112,22 @@ function App() {
       </aside>
       <main>
         <ul>
-          <li className="dev-item">
-            <header>
-              <img src="https://scontent.fcpq15-1.fna.fbcdn.net/v/t1.0-9/22045823_1177589249007910_7896443337599484308_n.jpg?_nc_cat=105&_nc_ohc=1e3jXuV6sb0AX9ubIgS&_nc_ht=scontent.fcpq15-1.fna&oh=3d9a5810bdf030a96903af7e17dd560f&oe=5E9F15D6"></img>
-              <div className="user-info">
-                <strong>Augusto Vesco</strong>
-                <span>ReactJS, React Native, Dart</span>
-              </div>
-            </header>
-            <p>Analysis and systems development student at FATEC Mogi Mirim</p>
-            <a href="https://github.com/gutovesco">Acessar perfil no Github</a>
-          </li>
-          <li className="dev-item">
-            <header>
-              <img src="https://scontent.fcpq15-1.fna.fbcdn.net/v/t1.0-9/22045823_1177589249007910_7896443337599484308_n.jpg?_nc_cat=105&_nc_ohc=1e3jXuV6sb0AX9ubIgS&_nc_ht=scontent.fcpq15-1.fna&oh=3d9a5810bdf030a96903af7e17dd560f&oe=5E9F15D6"></img>
-              <div className="user-info">
-                <strong>Augusto Vesco</strong>
-                <span>ReactJS, React Native, Dart</span>
-              </div>
-            </header>
-            <p>Analysis and systems development student at FATEC Mogi Mirim</p>
-            <a href="https://github.com/gutovesco">Acessar perfil no Github</a>
-          </li>
-          <li className="dev-item">
-            <header>
-              <img src="https://scontent.fcpq15-1.fna.fbcdn.net/v/t1.0-9/22045823_1177589249007910_7896443337599484308_n.jpg?_nc_cat=105&_nc_ohc=1e3jXuV6sb0AX9ubIgS&_nc_ht=scontent.fcpq15-1.fna&oh=3d9a5810bdf030a96903af7e17dd560f&oe=5E9F15D6"></img>
-              <div className="user-info">
-                <strong>Augusto Vesco</strong>
-                <span>ReactJS, React Native, Dart</span>
-              </div>
-            </header>
-            <p>Analysis and systems development student at FATEC Mogi Mirim</p>
-            <a href="https://github.com/gutovesco">Acessar perfil no Github</a>
-          </li>
+          {devs.map(dev => (
+             <li key={dev._id} className="dev-item">
+             <header>
+               <img src={dev.avatar_url} alt={dev.name}/>
+               <div className="user-info">
+                 <strong>{dev.name}</strong>
+          <span>{dev.techs.join(',')}</span>
+               </div>
+             </header>
+          <p>{dev.bio}</p>
+             <a href={`https://github.com/${dev.github_username}`}>Acessar perfil no Github</a>
+           </li>
+          ))}
         </ul>
       </main>
-
     </div>
-
   );
 }
 
